@@ -1,0 +1,1944 @@
+---
+title: "K-pop; Wielka trójka wytwórni"
+language: polski.yml
+format: 
+  html:
+    self-contained: true
+    echo: false
+    warning: false
+    message: false
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+## Czym jest k-pop?
+
+K-pop (ang. *korean pop*) to gatunek muzyki wywodzący się z Korei Południowej, który łączy w sobie elementy innych gatunków takich jak rock, jazz, hip-hop, rhythm and blues a nawet z muzyki klasycznej. Oprócz śpiewu i rapu, bardzo ważnym elementem jest część wizualna , czyli kolorowe stroje oraz zsynchronizowane choreografie taneczne, których tempo dopasowywane jest do piosenki.
+
+![Zdjęcie zespołu K-pop Ateez](ateez.jpg){#fig-ateez}
+
+Zwiększone zainteresowanie kulturą Korei Południowej spowodowane globalnym rozprzestrzenianiem się seriali koreańskich oraz K-popu skłoniło rząd Korei do uznania korzyści dla sektora eksportowego kraju. Dzięki temu rząd zaczął wspierać przemysły kreatywne poprzez subwencje (tj. bezzwrotną pomoc finansową) oraz dofinansowania dla startupów.
+
+Prócz czerpania korzyści ekonomicznych, rząd Korei wykorzystuje wpływ K-popu na dyplomację. Osiąganie celu poprzez przekonanie interesariuszy za pomocą atrakcyjności własnej kultury, czy ideałów (*soft power*) uważane jest za bardziej skuteczną taktykę dyplomatyczną niż tradycyjne osiąganie celu poprzez bezpośrednie zastraszanie (*hard power*).
+
+## Wytwórnie rozrywkowe w Korei Południowej
+
+Popularność k-popu sprawiła, że w Korei zaczęły powstawać coraz to nowe wytwórnie rozrywkowe. Zajmują się one rekrutacją, finansowaniem, szkoleniem, marketingiem oraz zarządzaniem działalnością muzyczną swoich artystów. Spośród nich najbardziej znane są: SM Entertainment, YG Entertainment oraz JYP Entertainment nazywane również "Wielką Trójką" ze względu na ich sprzedaż oraz przychody. Te firmy założyli: Lee Soo-man, Yang Hyun-suk (ps. Yang-gun) oraz Park Jin-young a od ich inicjałów pochodzą nazwy wymienionych wytwórni
+
+## Przychody "Wielkiej Trójki"
+
+Poniżej zostaną przedstawione tabele przychodów poszczególnych wytwórni, a następnie zostaną one porównane ze sobą.
+
+```{r}
+library(tidyverse)
+library(rvest)
+library(flextable)
+library(scales)
+```
+
+```{r}
+url1 <- "https://www.wsj.com/market-data/quotes/KR/035900/financials/annual/income-statement"
+page1 <- read_html(url1)
+
+rokjyp <- page1 %>%
+  html_nodes("th:nth-child(4) , th:nth-child(5) , th:nth-child(6) , th:nth-child(3) , .fiscalYr+ th") %>% 
+  html_text() 
+
+przychodjyp <- page1 %>% 
+  html_nodes("thead+ tbody > tr:nth-child(1) > td:nth-child(3) , thead+ tbody > tr:nth-child(1) > td:nth-child(4) , thead+ tbody > tr:nth-child(1) > td:nth-child(5) , tr:nth-child(1) td:nth-child(6) , thead+ tbody > tr:nth-child(1) > td:nth-child(2)") %>%
+  html_text() %>% 
+  parse_number()
+
+wzrostpjyp <- page1 %>%
+  html_nodes("tr:nth-child(2) .deltaType-positive+ td , tr:nth-child(2) .deltaType-positive") %>%
+  html_text() %>%
+  parse_number(na = "-")
+
+bruttojyp <- page1 %>%
+  html_nodes("tr:nth-child(10) td:nth-child(6) , tr:nth-child(10) > td:nth-child(5) , tr:nth-child(10) > td:nth-child(4) , tr:nth-child(10) > td:nth-child(3) , tr:nth-child(10) > td:nth-child(2)") %>%
+  html_text() %>%
+  parse_number()
+
+wzrostbjyp <- page1 %>%
+  html_nodes("tr:nth-child(11) .deltaType-positive+ td , tr:nth-child(11) .deltaType-positive") %>%
+  html_text() %>% 
+  parse_number(na = "-")
+
+ebitjyp <- page1 %>%
+  html_nodes("tr:nth-child(18) td:nth-child(6) , tr:nth-child(18) > td:nth-child(5) , tr:nth-child(18) > td:nth-child(4) , tr:nth-child(18) > td:nth-child(3) , tr:nth-child(18) > td:nth-child(2)") %>%
+  html_text() %>%
+  parse_number()
+
+nettojyp <- page1 %>% 
+  html_nodes("tr:nth-child(40) > td:nth-child(5) , tr:nth-child(40) td:nth-child(6) , tr:nth-child(40) > td:nth-child(4) , tr:nth-child(40) > td:nth-child(3) , tr:nth-child(40) > td:nth-child(2)") %>% 
+  html_text() %>%
+  parse_number()
+
+wzrostnjyp <- page1 %>%
+  html_nodes("tr:nth-child(41) .deltaType-positive+ td , tr:nth-child(41) .deltaType-positive") %>%
+  html_text() %>% 
+  parse_number(na = "-")
+
+ebtjyp <- page1 %>%
+  html_nodes("tr:nth-child(27) td:nth-child(6) , tr:nth-child(27) > td:nth-child(5) , tr:nth-child(27) > td:nth-child(4) , tr:nth-child(27) > td:nth-child(3) , tr:nth-child(27) > td:nth-child(2)") %>%
+  html_text() %>%
+  parse_number()
+
+wzrostebtjyp <- page1 %>%
+  html_nodes("tr:nth-child(28) .deltaType-positive+ td , tr:nth-child(28) .deltaType-positive") %>%
+  html_text() %>%
+  parse_number(na = "-")
+
+ebitdajyp <- page1 %>%
+  html_nodes("tr:nth-child(56) td:nth-child(6) , tr:nth-child(56) > td:nth-child(5) , tr:nth-child(56) > td:nth-child(4) , tr:nth-child(56) > td:nth-child(3) , tr:nth-child(56) > td:nth-child(2)") %>%
+  html_text() %>%
+  parse_number()
+
+wzrostebitdajyp <- page1 %>%
+  html_nodes("tr:nth-child(57) .deltaType-positive+ td , tr:nth-child(57) .deltaType-positive") %>%
+  html_text() %>%
+  parse_number(na = "-")
+
+
+JYP <- data.frame(rokjyp, przychodjyp, wzrostpjyp, bruttojyp, wzrostbjyp, ebitjyp,nettojyp, wzrostnjyp, ebtjyp, wzrostebtjyp, ebitdajyp, wzrostebitdajyp)
+  
+```
+
+```{r}
+#| label: tbl-jyp
+#| tbl-cap: Przychody  JYP i ich wzrost w latach 2017-2021
+
+JYP %>%
+  flextable() %>% 
+  add_footer_lines(values = "Źródło: Dane pozyskane ze strony wsj.com") %>% 
+  footnote(i = 1, j = c(6,9,11), value = as_paragraph(c("Earnings Before deducting Interest and Taxes", "Earnings Before Taxes", "Earnings Before Interest, Taxes, Depreciation and Amortization")), ref_symbols = c("*", "**", "***"), part = "header") %>%
+  color(part = "footer", color = "grey") %>%
+  color(~ wzrostpjyp < 0, color = "red", ~ wzrostpjyp) %>%
+  color(~ wzrostbjyp < 0, color = "red", ~ wzrostbjyp) %>%
+  color(~ wzrostnjyp < 0, color = "red", ~ wzrostnjyp) %>%
+   color(~ wzrostebtjyp < 0, color = "red", ~ wzrostebtjyp) %>%
+   color(~ wzrostebitdajyp < 0, color = "red", ~ wzrostebitdajyp) %>%
+   color(~ wzrostpjyp > 0, color = "#43D18F", ~ wzrostpjyp) %>%
+   color(~ wzrostbjyp > 0, color = "#43D18F", ~ wzrostbjyp) %>%
+   color(~ wzrostnjyp > 0, color = "#43D18F", ~ wzrostnjyp) %>%
+  color(~ wzrostebtjyp  > 0, color = "#43D18F", ~ wzrostebtjyp) %>%
+  color(~ wzrostebitdajyp > 0, color = "#43D18F", ~ wzrostebitdajyp) %>%
+  set_header_labels(rokjyp = "Rok",
+                    przychodjyp = "Przychód (mln KRW)",
+                    wzrostpjyp = "Wzrost przychodu (%)", 
+                    bruttojyp = "Zysk brutto (mln KRW)",
+                    wzrostbjyp = "Wzrost brutto (%)",
+                    ebitjyp = "EBIT (mln KRW)", 
+                    
+                    nettojyp = "Zysk netto (mln KRW)", 
+                    wzrostnjyp = "Wzrost netto (%)",
+                    ebtjyp = "EBT (mln KRW)", 
+                    wzrostebtjyp = "Wzrost EBT (%)", 
+                    ebitdajyp = "EBITDA (mln KRW)", 
+                    wzrostebitdajyp = "Wzrost EBITDA (%)") %>%
+  bg(j = "przychodjyp", bg = col_numeric(palette = c("#A1E7F5", "#3758C4"),
+                        domain = c(100000, 194000)),
+    part = "body")
+```
+
+```{r}
+url2 <- "https://www.wsj.com/market-data/quotes/KR/XKRX/122870/financials/annual/income-statement"
+page2 <- read_html(url2)
+
+rokyg <- page2 %>%
+  html_nodes("th:nth-child(6) , th:nth-child(5) , th:nth-child(4) , th:nth-child(3) , .fiscalYr+ th") %>%
+  html_text()
+
+przychodyg <- page2 %>%
+  html_nodes("thead+ tbody > tr:nth-child(1) > td:nth-child(5) , tr:nth-child(1) td:nth-child(6) , thead+ tbody > tr:nth-child(1) > td:nth-child(4) , thead+ tbody > tr:nth-child(1) > td:nth-child(3) , thead+ tbody > tr:nth-child(1) > td:nth-child(2)") %>%
+  html_text() %>%
+  parse_number()
+
+wzrostpyg <- page2 %>%
+  html_nodes("tr:nth-child(2) .deltaType-negative+ td , tr:nth-child(2) .deltaType-negative , tr:nth-child(2) .deltaType-positive") %>%
+  html_text() %>%
+  parse_number(na = "-")
+
+bruttoyg <- page2 %>%
+  html_nodes("tr:nth-child(10) td:nth-child(6) , tr:nth-child(10) > td:nth-child(5) , tr:nth-child(10) > td:nth-child(4) , tr:nth-child(10) > td:nth-child(3) , tr:nth-child(10) > td:nth-child(2)") %>%
+  html_text() %>%
+  parse_number()
+
+wzrostbyg <- page2 %>%
+  html_nodes("tr:nth-child(11) .deltaType-negative+ td , tr:nth-child(11) .deltaType-negative , tr:nth-child(11) .deltaType-positive") %>%
+  html_text() %>%
+  parse_number(na = "-")
+
+ebityg <- page2 %>%
+  html_nodes("tr:nth-child(18) td:nth-child(6) , tr:nth-child(18) > td:nth-child(5) , tr:nth-child(18) > td:nth-child(4) , tr:nth-child(18) > td:nth-child(3) , tr:nth-child(18) > td:nth-child(2)") %>%
+  html_text() %>%
+  parse_number(na = "-")
+
+nettoyg <- page2 %>%
+  html_nodes("tr:nth-child(40) td:nth-child(6) , tr:nth-child(40) > td:nth-child(5) , tr:nth-child(40) > td:nth-child(4) , tr:nth-child(40) > td:nth-child(3) , tr:nth-child(40) > td:nth-child(2)") %>%
+  html_text() %>%
+  parse_number()
+
+wzrostnyg <- page2 %>%
+  html_nodes("tr:nth-child(41) .deltaType-positive+ td , tr:nth-child(41) .deltaType-positive , tr:nth-child(41) .deltaType-negative") %>%
+  html_text() %>%
+  parse_number(na = "-")
+
+ebtyg <- page2 %>%
+  html_nodes("tr:nth-child(27) td:nth-child(6) , tr:nth-child(27) > td:nth-child(5) , tr:nth-child(27) > td:nth-child(4) , tr:nth-child(27) > td:nth-child(3) , tr:nth-child(27) > td:nth-child(2)") %>%
+  html_text() %>%
+  parse_number()
+
+wzrostebtyg <- page2 %>%
+  html_nodes("tr:nth-child(28) .deltaType-positive+ td , tr:nth-child(28) .deltaType-positive") %>% 
+  html_text() %>%
+  parse_number(na = "-")
+
+ebitdayg <- page2 %>%
+  html_nodes("tr:nth-child(56) td:nth-child(6) , tr:nth-child(56) > td:nth-child(5) , tr:nth-child(56) > td:nth-child(4) , tr:nth-child(56) > td:nth-child(3) , tr:nth-child(56) > td:nth-child(2)") %>%
+  html_text() %>%
+  parse_number()
+  
+wzrostebitdayg <- page2 %>%
+  html_nodes("tr:nth-child(57) .deltaType-negative+ td , tr:nth-child(57) .deltaType-negative , tr:nth-child(57) .deltaType-positive") %>%
+  html_text() %>%
+  parse_number(na = "-")
+
+yg <- data.frame(rokyg, przychodyg, wzrostpyg, bruttoyg, wzrostbyg, ebityg, nettoyg, wzrostnyg,ebtyg, wzrostebtyg, ebitdayg, wzrostebitdayg)
+```
+
+```{r}
+#| label: tbl-yg
+#| tbl-cap: Przychody YG i ich wzrost w latach 2017-2021
+yg %>% 
+  flextable() %>% 
+  add_footer_lines(values = "Źródło: Dane pozyskane ze strony wsj.com") %>% 
+  footnote(i = 1, j = c(6,9,11), value = as_paragraph(c("Earnings Before deducting Interest and Taxes", "Earnings Before Taxes", "Earnings Before Interest, Taxes, Depreciation and Amortization")), ref_symbols = c("*", "**", "***"), part = "header") %>%
+  color(part = "footer", color = "grey") %>%
+  color(~ wzrostpyg < 0, color = "red", ~ wzrostpyg) %>%
+  color(~ wzrostbyg < 0, color = "red", ~ wzrostbyg) %>%
+  color(~ wzrostnyg < 0, color = "red", ~ wzrostnyg) %>%
+  color(~ wzrostebtyg < 0, color = "red", ~ wzrostebtyg) %>%
+   color(~ wzrostebitdayg < 0, color = "red", ~ wzrostebitdayg) %>%
+   color(~ wzrostpyg > 0, color = "#43D18F", ~ wzrostpyg) %>%
+   color(~ wzrostbyg > 0, color = "#43D18F", ~ wzrostbyg) %>%
+   color(~ wzrostnyg > 0, color = "#43D18F", ~ wzrostnyg) %>%
+  color(~ wzrostebtyg  > 0, color = "#43D18F", ~ wzrostebtyg) %>%
+  color(~ wzrostebitdayg > 0, color = "#43D18F", ~ wzrostebitdayg) %>%
+  set_header_labels(rokyg = "Rok",
+                    przychodyg = "Przychód (mln KRW)",
+                    wzrostpyg = "Wzrost przychodu (%)", 
+                    bruttoyg = "Zysk brutto (mln KRW)",
+                    wzrostbyg = "Wzrost brutto (%)",
+                    ebityg = "EBIT (mln KRW)", 
+                    nettoyg = "Zysk netto (mln KRW)", 
+                    wzrostnyg = "Wzrost netto (%)",
+                    ebtyg = "EBT (mln KRW)", 
+                    wzrostebtyg = "Wzrost EBT (%)", 
+                    ebitdayg = "EBITDA (mln KRW)", 
+                    wzrostebitdayg = "Wzrost EBITDA (%)") %>%
+  bg(j = "przychodyg", bg = col_numeric(palette = c("#A3D6BA", "#20961C"),
+                        domain = c(250000, 360000)),
+    part = "body")
+```
+
+```{r}
+url3 <- "https://www.wsj.com/market-data/quotes/KR/XKRX/041510/financials/annual/income-statement"
+page3 <- read_html(url3)
+
+roksm <- page3 %>%
+  html_nodes("th:nth-child(6) , th:nth-child(5) , th:nth-child(4) , th:nth-child(3) , .fiscalYr+ th") %>%
+  html_text()
+
+przychodsm <- page3 %>%
+  html_nodes("tr:nth-child(1) td:nth-child(6) , thead+ tbody > tr:nth-child(1) > td:nth-child(5) , thead+ tbody > tr:nth-child(1) > td:nth-child(4) , thead+ tbody > tr:nth-child(1) > td:nth-child(3) , thead+ tbody > tr:nth-child(1) > td:nth-child(2)") %>%
+  html_text() %>%
+  parse_number()
+
+wzrostpsm <- page3 %>%
+  html_nodes("tr:nth-child(2) .deltaType-positive+ td , tr:nth-child(2) .deltaType-positive") %>%
+  html_text() %>%
+  parse_number(na = "-")
+
+bruttosm <- page3 %>%
+  html_nodes("tr:nth-child(10) td:nth-child(6) , tr:nth-child(10) > td:nth-child(5) , tr:nth-child(10) > td:nth-child(4) , tr:nth-child(10) > td:nth-child(3) , tr:nth-child(10) > td:nth-child(2)") %>%
+  html_text() %>%
+  parse_number()
+
+wzrostbsm <- page3 %>%
+  html_nodes("tr:nth-child(11) .deltaType-positive+ td , tr:nth-child(11) .deltaType-positive") %>%
+  html_text() %>%
+  parse_number(na = "-")
+
+ebitsm <- page3 %>%
+  html_nodes("tr:nth-child(18) td:nth-child(6) , tr:nth-child(18) > td:nth-child(5) , tr:nth-child(18) > td:nth-child(4) , tr:nth-child(18) > td:nth-child(3) , tr:nth-child(18) > td:nth-child(2)") %>%
+  html_text() 
+
+nettosm <- page3 %>%
+  html_nodes("tr:nth-child(40) td:nth-child(6) , tr:nth-child(40) > td:nth-child(5) , tr:nth-child(40) > td:nth-child(4) , tr:nth-child(40) > td:nth-child(3) , tr:nth-child(40) > td:nth-child(2)") %>%
+  html_text() %>%
+  parse_number()
+
+wzrostnsm <- page3 %>%
+  html_nodes("tr:nth-child(41) .deltaType-positive+ td , tr:nth-child(41) .deltaType-negative , tr:nth-child(41) .deltaType-positive") %>%
+  html_text() %>%
+  parse_number(na = "-" ) 
+
+ebtsm <- page3 %>%
+  html_nodes("tr:nth-child(27) td:nth-child(6) , tr:nth-child(27) > td:nth-child(5) , tr:nth-child(27) > td:nth-child(4) , tr:nth-child(27) > td:nth-child(3) , tr:nth-child(27) > td:nth-child(2)") %>%
+  html_text() %>%
+  parse_number()
+
+wzrostebtsm <- page3 %>%
+  html_nodes("tr:nth-child(28) .deltaType-positive+ td , tr:nth-child(28) .deltaType-negative , tr:nth-child(28) .deltaType-positive") %>% 
+  html_text() %>%
+  parse_number(na = "-")
+
+ebitdasm <- page3 %>%
+  html_nodes("tr:nth-child(56) td:nth-child(6) , tr:nth-child(56) > td:nth-child(5) , tr:nth-child(56) > td:nth-child(4) , tr:nth-child(56) > td:nth-child(3) , tr:nth-child(56) > td:nth-child(2)") %>%
+  html_text() %>%
+  parse_number()
+  
+wzrostebitdasm <- page3 %>%
+  html_nodes("tr:nth-child(57) .deltaType-positive+ td , tr:nth-child(57) .deltaType-positive") %>%
+  html_text() 
+
+SM <- data.frame(roksm, przychodsm, wzrostpsm,bruttosm, wzrostbsm, ebitsm, nettosm, wzrostnsm, ebtsm, wzrostebtsm, ebitdasm, wzrostebitdasm)
+```
+
+```{r}
+rok <- as.vector(c(rokjyp, roksm, rokyg))
+przychod <- as.vector(c(przychodjyp, przychodsm, przychodyg))
+Wytwórnia <- rep(c("JYP", "SM", "YG"), c(5, 5, 5))
+wytwornie <- data.frame(rok, przychod, Wytwórnia) 
+```
+
+```{r}
+#| label: tbl-sm
+#| tbl-cap: Przychody  S.M i ich wzrost w latach 2017-2021
+SM %>%
+  flextable() %>% 
+  add_footer_lines(values = "Źródło: Dane pozyskane ze strony wsj.com") %>% 
+   footnote(i = 1, j = c(6,9,11), value = as_paragraph(c("Earnings Before deducting Interest and Taxes", "Earnings Before Taxes", "Earnings Before Interest, Taxes, Depreciation and Amortization")), ref_symbols = c("*", "**", "***"), part = "header") %>%
+  color(part = "footer", color = "grey") %>%
+  color(~ wzrostpsm < 0, color = "red", ~ wzrostpsm) %>%
+  color(~ wzrostbsm < 0, color = "red", ~ wzrostbsm) %>%
+  color(~ wzrostnsm < 0, color = "red", ~ wzrostnsm) %>%
+  color(~ wzrostebtsm < 0, color = "red", ~ wzrostebtsm) %>%
+   color(~ wzrostebitdasm < 0, color = "red", ~ wzrostebitdasm) %>%
+   color(~ wzrostpsm > 0, color = "#43D18F", ~ wzrostpsm) %>%
+   color(~ wzrostbsm > 0, color = "#43D18F", ~ wzrostbsm) %>%
+   color(~ wzrostnsm > 0, color = "#43D18F", ~ wzrostnsm) %>%
+  color(~ wzrostebtsm  > 0, color = "#43D18F", ~ wzrostebtsm) %>%
+  color(~ wzrostebitdasm > 0, color = "#43D18F", ~ wzrostebitdasm) %>%
+  set_header_labels(roksm = "Rok",
+                    przychodsm = "Przychód (mln KRW)",
+                    wzrostpsm = "Wzrost przychodu (%)", 
+                    bruttosm = "Zysk brutto (mln KRW)",
+                    wzrostbsm = "Wzrost brutto (%)",
+                    ebitsm = "EBIT (mln KRW)",
+                    nettosm = "Zysk netto (mln KRW)", 
+                    wzrostnsm = "Wzrost netto (%)",
+                    ebtsm = "EBT (mln KRW)", 
+                    wzrostebtsm = "Wzrost EBT (%)", 
+                    ebitdasm = "EBITDA (mln KRW)", 
+                    wzrostebitdasm = "Wzrost EBITDA (%)") %>%
+  bg(j = "przychodsm", bg = col_numeric(palette = c("#B6A4BF", "#662887"),
+                        domain = c(360000, 703000)),
+    part = "body")
+
+```
+
+```{r}
+#| label: fig-przychod
+#| fig-cap: Porównanie przychodu "Wielkiej Trójki"
+ wytwornie |> 
+  ggplot(aes(x = Wytwórnia, y = przychod, fill = Wytwórnia)) +
+   geom_col() + 
+   facet_wrap(~rok, scales = "free") +
+  labs(x = "", 
+       y = "Przychód") +
+   scale_fill_manual(values = c("#46A0DB", "#9B61C2", "#44C464FD"), 
+                    labels = c("JYP", "S.M", "YG")) +
+   scale_y_log10() +
+   ylim(c(0, 715000)) +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+```
+
+Na podstawie @fig-przychod wyraźnie widać, że wytwórnia S.M jedynie w roku 2017 miała wyrównany przychód z choć jedną firmą. W pozostałych miała zdecydowaną przewagę.
+
+## Artyści każdej wytwórni
+
+Wytwórnie rozrywkowe mają pod swoją opieką różnego rodzaju artystów: solistów, zespoły, aktorów, producentów czy choreografów. JYP oraz YG posiadają również spółki zależne/podwytwórnie, które jednak nie będą brane pod uwagę.
+
+```{r}
+url4 <- "https://en.wikipedia.org/wiki/JYP_Entertainment"
+
+page4 <- read_html(url4)
+
+jypgrupy <- page4 %>%
+  html_nodes("h4+ div td:nth-child(1) li:nth-child(5) , h4+ div td:nth-child(1) li > a") %>% 
+  html_text()
+
+jypgrupy[5] <- "JYP Loud"
+
+iloscgrjyp <- jypgrupy %>%
+  length()
+
+jypsolo <- page4 %>%
+  html_nodes("h4+ div td+ td a") %>%
+  html_text() 
+
+iloscsolojyp <- jypsolo %>%
+  length()
+
+jypprod <- page4 %>%
+  html_nodes("#mw-content-text h2+ div ul:nth-child(1) li , .multicol ul:nth-child(1) li+ li , td:nth-child(1) li:nth-child(7) , .multicol li:nth-child(9) , .multicol li:nth-child(8) , h2+ div td:nth-child(1) li:nth-child(4) , h2+ div td:nth-child(1) li:nth-child(5) , h2+ div td:nth-child(1) li:nth-child(3) , .multicol li:nth-child(10) , .multicol li:nth-child(11) , .multicol li:nth-child(12) , .multicol li:nth-child(14) , .multicol li:nth-child(13) , h2+ div td:nth-child(1) li:nth-child(2) , .multicol .mw-redirect") %>% 
+  html_text() 
+
+jypprod <- jypprod[-c(29, 30)] 
+jypprod[1] <- "The Asiansoul (J. Y. Park)"
+
+iloscprodjyp <- jypprod %>% 
+  length()
+
+jypchoreo <- page4 %>%
+  html_nodes("td~ td+ td p+ ul li+ li , td~ td+ td p+ ul a") %>% 
+  html_text()
+
+iloscchoreojyp <- jypchoreo %>%
+  length()
+
+jypakt <- page4 %>%
+  html_nodes("h2+ p > a") %>%
+  html_text()
+
+jypakt <- c(jypakt, "Kang Hoon", "Lee Chan-sun") 
+iloscaktjyp <- jypakt %>%
+  length()
+```
+
+```{r}
+url5 <- "https://en.wikipedia.org/wiki/List_of_SM_Entertainment_artists"
+page5 <- read_html(url5)
+
+smgrupy <- page5 %>%
+  html_nodes("td:nth-child(2) li li a") %>%
+  html_text()
+smgrupy <- smgrupy[1:7]
+
+iloscgrsm <- smgrupy %>%
+  length()
+
+smsolo <- page5 %>%
+  html_nodes("td:nth-child(1) li li a") %>%
+  html_text()
+
+iloscsolosm <- smsolo %>%
+  length()
+
+smakt <- page5 %>%
+  html_nodes("#mw-content-text h3+ div ul:nth-child(1) li") %>%
+  html_text()
+
+smakt[2] <- "Choi Jong-yoon"
+smakt[5] <- "Lee Cheol-woo"
+smakt[7] <- "Lina"
+smakt[9] <- "Kim Ji-woo"
+smakt[10] <- "Lami"
+
+iloscaktsm <- smakt %>%
+  length()
+  
+smprod <- page5 %>%
+  html_nodes("p+ ul li:nth-child(9) , p+ ul li:nth-child(8) , td:nth-child(1) p+ ul li:nth-child(6) a , p+ ul .extiw , p+ ul:nth-child(2) li:nth-child(4) a , p+ ul:nth-child(2) li:nth-child(3) a , p+ ul li:nth-child(7) , p+ ul:nth-child(2) li:nth-child(2) a , p+ ul:nth-child(2) li:nth-child(1) a") %>%
+  html_text()
+
+iloscprodsm <- smprod %>%
+  length()
+
+smchoreo <- page5 %>%
+  html_nodes("td+ td p+ ul:nth-child(4) li") %>%
+  html_text()
+
+iloscchoreosm <- smchoreo %>%
+  length()
+```
+
+```{r}
+url6 <- "https://en.wikipedia.org/wiki/YG_Entertainment" 
+page6 <- read_html(url6)
+
+yggrupy <- page6 %>%
+  html_nodes("div:nth-child(97) td:nth-child(1) ul:nth-child(2) a") %>%
+  html_text() 
+
+iloscgryg <- yggrupy %>%
+  length()
+
+ygsolo <- page6 %>%
+  html_nodes("td:nth-child(2) li:nth-child(11) , div:nth-child(97) td:nth-child(2) a") %>%
+  html_text()
+ygsolo <- ygsolo[1:11]
+
+iloscsoloyg <- ygsolo %>%
+  length()
+
+ygakt <- page6 %>%
+  html_nodes("style+ .div-col li:nth-child(29) , style+ .div-col li:nth-child(24) , style+ .div-col li:nth-child(23) , style+ .div-col li:nth-child(20) , style+ .div-col li > a") %>%
+  html_text() 
+ygakt[23] <- "Nam Kyu-hee"
+ygakt[24] <- "Park Hyeong-seop"
+
+iloscaktyg <- ygakt %>%
+  length()
+
+ygprod <- page6 %>%
+  html_nodes("td~ td+ td li:nth-child(8) , td~ td+ td li:nth-child(5) , td~ td+ td li:nth-child(10) , td~ td+ td li:nth-child(9) , td~ td+ td li:nth-child(7) , td~ td+ td li:nth-child(4) , td~ td+ td li > a") %>%
+  html_text()
+ygprod[4] <- "Kang Uk-jin"
+ygprod[5] <- "AiRPLAY"
+ygprod[7] <- "Lydia Paek"
+ygprod[8] <- "Ham Seung-cheon"
+ygprod[9] <- "iHwak"
+ygprod[10] <- "Rovin"
+
+iloscprodyg <- ygprod %>%
+  length()
+iloscchoreoyg <- NA
+```
+
+```{r}
+solisci <- as.vector(c(iloscsolojyp, iloscsolosm, iloscsoloyg))
+grupy <- as.vector(c(iloscgrjyp, iloscgrsm, iloscgryg))
+aktorzy <- as.vector(c(iloscaktjyp, iloscaktsm, iloscaktyg))
+producenci <- as.vector(c(iloscprodjyp, iloscprodsm, iloscprodyg))
+choreo <- as.vector(c(iloscchoreojyp, iloscchoreosm, iloscchoreoyg))
+wytwornieart <- c("JYP Entertainment", "S.M Entertainment", "YG Entertainment")
+artysci <- data.frame(wytwornieart, grupy, solisci, aktorzy, producenci, choreo)
+```
+
+```{r}
+#| label: tbl-artysci
+#| tbl-cap: Ilość artystów 
+artysci %>%
+  flextable() %>%
+  set_header_labels(wytwornieart = "Wytwórnia",
+                     solisci = "Grupy",
+                    grupy = "Soliści",
+                    aktorzy = "Aktorzy",
+                    producenci = "Producenci",
+                    choreo = "Choreografowie") %>%  
+  vline(j = 1:6, border = fp_border_default(width = 1.5), part = "all") %>%
+  vline_left(i = 1, border = fp_border_default(width = 1.5), part = "header") %>%
+  vline_left(i = 1:3, border = fp_border_default(width = 1.5), part = "body") %>%
+  bg(j = rep(c(FALSE, TRUE), 3), bg = "#CDC1D1", part = "body")
+```
+
+Znikoma ilość aktorów w JYP Entertainment spowodowana jest połączeniem wydziału z rozwijającą się firmą Npio Entertainment. Zdecydowano wtedy, że jedynie szóstka aktorów pozostanie aż do końca ich kontraktu, z pozostałymi umowa została zerwana za porozumieniem stron.
+
+## Nagrody i nominacje
+
+W tej części skupię się jedynie na zespołach k-pop. Na galach zespoły mogą otrzymać nagrodę np. za konkretną piosenkę, album, choreografię, sprzedaż. Dwa zespoły z YG Entertainment zostały pominięte z powodu braku danych.
+
+```{r}
+url2pm <- "https://en.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_2PM"
+page2pm <- read_html(url2pm)
+
+wynik2pm <- page2pm %>% 
+  html_nodes(".notheme") %>%
+  html_text() |> 
+  str_remove_all(pattern = "\n")
+
+nom2pm <- length(wynik2pm)
+
+wynik2pm <- as.data.frame(wynik2pm)
+
+wyg2pm <- wynik2pm %>%
+  filter(wynik2pm == "Won") %>%
+  count()
+
+pm <- as.vector(c(wyg2pm, nom2pm))
+pm <- unlist(pm)
+
+urltwice <- "https://en.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_Twice"
+
+pagetwice <- read_html(urltwice)
+
+wyniktwice <- pagetwice %>%
+  html_nodes(".notheme") %>%
+  html_text() %>%
+  str_remove_all(pattern = "\n")
+
+nomtwice <- length(wyniktwice)
+
+wyniktwice <- as.data.frame(wyniktwice)
+
+wygtwice <- wyniktwice %>%
+  filter(wyniktwice == "Won") %>%
+  count()
+
+twice <- as.vector(c(wygtwice, nomtwice)) %>%
+  unlist()
+
+
+urlskz <- "https://en.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_Stray_Kids"
+
+pageskz <- read_html(urlskz)
+
+wynikskz <- pageskz %>%
+  html_nodes("tr+ tr .notheme") %>%
+  html_text() %>%
+  str_remove_all(pattern = "\n")
+wynikskz <- wynikskz[-109]
+
+nomskz <- length(wynikskz)
+
+wynikskz <- as.data.frame(wynikskz)
+
+wygskz <- wynikskz %>%
+  filter(wynikskz == "Won") %>%
+  count()
+
+skz <- as.vector(c(wygskz, nomskz)) %>%
+  unlist()
+
+
+urlitzy <- "https://en.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_Itzy"
+
+pageitzy <- read_html(urlitzy)
+
+wynikitzy <- pageitzy %>%
+  html_nodes(".notheme") %>%
+  html_text() %>%
+  str_remove_all(pattern = "\n")
+
+nomitzy <- length(wynikitzy)
+
+wynikitzy <- as.data.frame(wynikitzy)
+
+wygitzy <- wynikitzy %>%
+  filter(wynikitzy == "Won") %>%
+  count()
+
+itzy <- as.vector(c(wygitzy, nomitzy)) %>%
+  unlist()
+```
+
+```{r}
+urlaespa <- "https://en.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_Aespa"
+
+pageaespa <- read_html(urlaespa)
+
+wynikaespa <- pageaespa %>%
+  html_nodes(".table-included , .notheme") %>%
+  html_text() %>%
+  str_remove_all(pattern = "\n")
+
+nomaespa <- length(wynikaespa)
+
+wynikaespa <- as.data.frame(wynikaespa)
+
+wygaespa <- wynikaespa %>%
+  filter(wynikaespa == "Won") %>%
+  count()
+
+aespa <- as.vector(c(wygaespa, nomaespa)) %>%
+  unlist()
+
+
+urlnct <- "https://en.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_NCT"
+
+pagenct <- read_html(urlnct)
+
+wyniknct <- pagenct %>%
+  html_nodes(".notheme") %>%
+  html_text() %>%
+  str_remove_all(pattern = "\n")
+
+nomnct <- length(wyniknct)
+
+wyniknct <- as.data.frame(wyniknct)
+
+wygnct <- wyniknct %>%
+  filter(wyniknct == "Won") %>%
+  count()
+
+nct <- as.vector(c(wygnct, nomnct)) %>%
+  unlist()
+
+
+urlrvelv <- "https://en.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_Red_Velvet"
+
+pagervelv <- read_html(urlrvelv)
+
+wynikrvelv <- pagervelv %>%
+  html_nodes(".notheme") %>%
+  html_text() %>%
+  str_remove_all(pattern = "\n")
+
+nomrvelv <- length(wynikrvelv)
+
+wynikrvelv <- as.data.frame(wynikrvelv)
+
+wygrvelv <- wynikrvelv %>%
+  filter(wynikrvelv == "Won") %>%
+  count()
+
+rvelv <- as.vector(c(wygrvelv, nomrvelv)) %>%
+  unlist()
+
+
+urlexo <- "https://en.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_Exo"
+
+pageexo <- read_html(urlexo)
+
+wynikexo <- pageexo %>%
+  html_nodes(".notheme") %>%
+  html_text() %>%
+  str_remove_all(pattern = "\n")
+
+nomexo <- length(wynikexo)
+
+wynikexo <- as.data.frame(wynikexo)
+
+wygexo <- wynikexo %>%
+  filter(wynikexo == "Won") %>%
+  count()
+
+exo <- as.vector(c(wygexo, nomexo)) %>%
+  unlist()
+
+
+urlshine <- "https://en.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_Shinee"
+
+pageshine <- read_html(urlshine)
+
+wynikshine <- pageshine %>%
+  html_nodes(".notheme") %>%
+  html_text() %>%
+  str_remove_all(pattern = "\n")
+
+nomshine <- length(wynikshine)
+
+wynikshine <- as.data.frame(wynikshine)
+
+wygshine <- wynikshine %>%
+  filter(wynikshine == "Won") %>%
+  count()
+
+shine <- as.vector(c(wygshine, nomshine)) %>%
+  unlist()
+
+
+urlggen <- "https://en.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_Girls%27_Generation"
+
+pageggen  <- read_html(urlggen )
+
+wynikggen  <- pageggen  %>%
+  html_nodes(".notheme") %>%
+  html_text() %>%
+  str_remove_all(pattern = "\n")
+
+nomggen  <- length(wynikggen )
+
+wynikggen  <- as.data.frame(wynikggen )
+
+wygggen  <- wynikggen  %>%
+  filter(wynikggen  == "Won") %>%
+  count()
+
+ggen  <- as.vector(c(wygggen , nomggen )) %>%
+  unlist()
+
+
+urltvxq <- "https://en.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_TVXQ"
+
+pagetvxq <- read_html(urltvxq)
+
+wyniktvxq <- pagetvxq %>%
+  html_nodes(".notheme") %>%
+  html_text() %>%
+  str_remove_all(pattern = "\n")
+
+nomtvxq <- length(wyniktvxq)
+
+wyniktvxq <- as.data.frame(wyniktvxq)
+
+wygtvxq <- wyniktvxq %>%
+  filter(wyniktvxq == "Won") %>%
+  count()
+
+tvxq <- as.vector(c(wygtvxq, nomtvxq)) %>%
+  unlist()
+```
+
+```{r}
+urlbb <- "https://en.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_Big_Bang"
+
+pagebb <- read_html(urlbb)
+
+wynikbb <- pagebb %>%
+  html_nodes(".notheme") %>%
+  html_text() %>%
+  str_remove_all(pattern = "\n")
+
+nombb <- length(wynikbb)
+
+wynikbb <- as.data.frame(wynikbb)
+
+wygbb <- wynikbb %>%
+  filter(wynikbb == "Won") %>%
+  count()
+
+bb <- as.vector(c(wygbb, nombb)) %>%
+  unlist()
+
+
+urlakmu <- "https://en.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_AKMU"
+
+pageakmu <- read_html(urlakmu)
+
+wynikakmu <- pageakmu %>%
+  html_nodes(".notheme") %>%
+  html_text() %>%
+  str_remove_all(pattern = "\n")
+
+nomakmu <- length(wynikakmu)
+
+wynikakmu <- as.data.frame(wynikakmu)
+
+wygakmu <- wynikakmu %>%
+  filter(wynikakmu == "Won") %>%
+  count()
+
+akmu <- as.vector(c(wygakmu, nomakmu)) %>%
+  unlist()
+
+
+urlbpink <- "https://en.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_Blackpink"
+
+pagebpink <- read_html(urlbpink)
+
+wynikbpink <- pagebpink %>%
+  html_nodes(".notheme") %>%
+  html_text() %>%
+  str_remove_all(pattern = "\n")
+
+nombpink <- length(wynikbpink)
+
+wynikbpink <- as.data.frame(wynikbpink)
+
+wygbpink <- wynikbpink %>%
+  filter(wynikbpink == "Won") %>%
+  count()
+
+bpink <- as.vector(c(wygbpink, nombpink)) %>%
+  unlist()
+
+
+urltreas <- "https://en.wikipedia.org/wiki/Treasure_(band)#Awards_and_nominations"
+
+pagetreas <- read_html(urltreas)
+
+wyniktreas <- pagetreas %>%
+  html_nodes(".notheme") %>%
+  html_text() %>%
+  str_remove_all(pattern = "\n")
+
+nomtreas <- length(wyniktreas)
+
+wyniktreas <- as.data.frame(wyniktreas)
+
+wygtreas <- wyniktreas %>%
+  filter(wyniktreas == "Won") %>%
+  count()
+
+treas <- as.vector(c(wygtreas, nomtreas)) %>%
+  unlist()
+
+
+urlwin <- "https://en.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_Winner"
+
+pagewin <- read_html(urlwin)
+
+nomwin <- pagewin %>%
+  html_nodes("tr:nth-child(6) .infobox-data") %>%
+  html_text() %>% 
+  parse_number()
+
+wygwin <- pagewin %>%
+  html_nodes("tr:nth-child(5) .infobox-data") %>%
+  html_text() %>%
+  parse_number()
+
+win <- as.vector(c(wygwin, nomwin))
+```
+
+```{r}
+wynik <- c('Ilość wygranych', "Ilość nominacji")
+
+JYPnagr <- data.frame(wynik, pm, twice, skz, itzy)
+
+SMnagr <- data.frame(wynik, aespa, nct, rvelv, exo, shine, ggen, tvxq)
+
+YGnagr <- data.frame(wynik, bb, akmu, bpink, treas, win)
+```
+
+```{r}
+#| label: tbl-jypnagr
+#| tbl-cap: Ilość nominacji i wygranych zespołów JYP 
+JYPnagr %>%
+  flextable() %>% 
+  set_header_labels(wynik = " ", 
+                    pm = "2PM", 
+                    twice = "TWICE", 
+                    skz = "Stray Kids", 
+                    itzy = "Itzy") %>%
+  vline(j = c('wynik', 'pm', 'twice', 'skz', 'itzy'), border = fp_border_default(width = 1.5), part = "all") %>%
+  vline_left( border = fp_border_default(width = 1.5), part = "all") %>%
+  bg(i = 1, j = 1:5, bg = "#D4C8C8", part = "header") %>%
+  bg(i = 1:2, j = 1, bg = "#D4C8C8", part = "body") %>%
+  bg(i = 1, j = 2:5, bg = col_numeric(palette = c("#C3EFFA", "#04A4BD"), domain = c(30, 120)), part = "body")
+```
+
+```{r}
+#| label: tbl-smnagr
+#| tbl-cap: Ilość nominacji i wygranych zespołów S.M
+SMnagr %>%
+  flextable() %>%
+  set_header_labels(wynik = " ", 
+                    aespa = "Aespa", 
+                    nct = "NCT", 
+                    rvelv = "Red Velvet", 
+                    exo = "EXO", 
+                    shine = "SHINee", 
+                    ggen = "Girls' Generation",
+                    tvxq = "TVXQ") %>%
+  vline(j = c('wynik', 'aespa', 'nct', 'rvelv', 'exo', 'shine', 'ggen', 'tvxq')) %>%
+  vline_left( border = fp_border_default(width = 1.5), part = "all") %>%
+   bg(i = 1, j = 1:8, bg = "#D4C8C8", part = "header") %>%
+  bg(i = 1:2, j = 1, bg = "#D4C8C8", part = "body") %>%
+  bg(i = 1, j = 2:8, bg = col_numeric(palette = c("#DECCE3", "#B472C4"), domain = c(30, 180)), part = "body")
+```
+
+```{r}
+#| label: tbl-ygnagr
+#| tbl-cap: Ilość nominacji i wygranych zespołów YG
+YGnagr %>%
+  flextable() %>%
+  set_header_labels(wynik = " ", 
+                    bb = "BIGBANG",
+                    akmu = "AKMU",
+                    bpink = "BLACKPINK", 
+                    treas = "Treasure", 
+                    win = "WINNER") %>%
+  vline(j = c('wynik',  'bb', 'akmu', 'bpink', 'treas', 'win')) %>%
+  vline_left( border = fp_border_default(width = 1.5), part = "all") %>%
+   bg(i = 1, j = 1:6, bg = "#D4C8C8", part = "header") %>%
+  bg(i = 1:2, j = 1, bg = "#D4C8C8", part = "body") %>%
+  bg(i = 1, j = 2:6, bg = col_numeric(palette = c("#C5EBD2", "#15D974"), domain = c(15, 140)), part = "body")
+```
+
+## Dyskografia wytwórni
+
+Poniżej zostanie przedstawione porównanie ilości albumów wydanych przez poszczególne zespoły z każdej z wytwórni, ilość sprzedanych kopii oraz najwyższe notowania albumów studyjnych na listach popularności w amerykańskim tygodniku Billboard *(US World*), na oficjalnej stronie internetowej japońskiego przedsiębiorstwa Oricon Inc. (jap. *Kabushiki-gaisha Orikon*)*(JPN)* oraz koreańskiego Circle Chart, wcześniej znane również jako Gaon Chart *(KOR)*. Powstał on dopiero w lutym 2010 roku jednak część zespołów działała już wcześniej. Z tego powodu niektóre albumy mogą nie posiadać notacji *(oznaczone jako \* w tabeli)*. W tabelach wytwórni zespoły zostały podzielone na generacje. Generacjami nazywa się zespoły, które debiutowały w podobnym okresie oraz łączy je podobny styl muzyczny. Najczęściej dzielone są na cztery generacje:
+
+-   Generacja pierwsza 1992-2002
+
+-   Generacja druga 2003-2010
+
+-   Generacja trzecia 2011-2016
+
+-   Generacja czwarta 2017- ...
+
+```{r}
+rodzajealb <- c("Albumy studyjne", "Kompilacje", "Minialbumy", "Single")
+```
+
+```{r}
+pmurl <- "https://en.wikipedia.org/wiki/2PM_discography"
+pmpage <- read_html(pmurl)
+
+pmilosc <- pmpage %>%
+  html_nodes(".infobox-data") %>% 
+  html_text() %>% 
+  parse_number()
+
+twiceurl1 <- "https://en.wikipedia.org/wiki/Twice_albums_discography"
+twicepage1 <- read_html(twiceurl1)
+
+twice1 <- twicepage1 %>%
+  html_nodes("tr:nth-child(7) .infobox-data , tr:nth-child(4) .infobox-data , tr:nth-child(3) .infobox-data") %>%
+  html_text() %>%
+  parse_number()
+
+twiceurl2 <- "https://en.wikipedia.org/wiki/Twice_singles_discography"
+twicepage2 <- read_html(twiceurl2)
+
+twice2 <- twicepage2 %>%
+  html_nodes("tr:nth-child(3) .infobox-data") %>%
+  html_text() %>%
+  parse_number()
+
+twiceilosc <- as.vector(c(twice1, twice2))
+
+skzurl <- "https://en.wikipedia.org/wiki/Stray_Kids_discography"
+skzpage <- read_html(skzurl)
+
+skzilosc <- skzpage %>%
+  html_nodes("tr:nth-child(4) .infobox-data , tr:nth-child(8) .infobox-data , tr:nth-child(7) .infobox-data , tr:nth-child(3) .infobox-data") %>% 
+  html_text() %>%
+  parse_number()
+
+itzyurl <- "https://en.wikipedia.org/wiki/Itzy_discography"
+itzypage <- read_html(itzyurl)
+
+itzyilosc <- itzypage %>%
+  html_nodes("tr:nth-child(6) .infobox-data , tr:nth-child(5) .infobox-data , tr:nth-child(4) .infobox-data , tr:nth-child(3) .infobox-data") %>%
+  html_text() %>%
+  parse_number()
+```
+
+```{r}
+jypalb <- data.frame(rodzajealb, pmilosc, twiceilosc, skzilosc, itzyilosc)
+```
+
+```{r}
+#| label: tbl-ilalbjyp
+#| tbl-cap: Ilość wydanych albumów przez zespoły JYP
+
+jypalb %>%
+  flextable() %>%
+  set_header_labels(rodzajealb = " ",
+                    pmilosc = "2PM",
+                    twiceilosc = "TWICE",
+                    skzilosc = "Stray Kids",
+                    itzyilosc = "ITZY") %>% 
+  add_header_row(colwidths = c(1, 1, 1, 2), values = c(" ", "II", "III", "IV"), top = FALSE) %>% 
+  vline_left(border = fp_border_default(width = 1.5), part = "all") %>%
+  bg(j = 1:5, bg = "#4C9BAD", part = "header") %>%
+  bg(i = 1:4, j = 1, bg = "#4C9BAD", part = "body") %>%
+  vline(border = fp_border_default(width = 1.5)) %>%
+  bold(j = 1, part = "body") %>%
+  bold(part = "header") %>%
+  hline(border = fp_border_default(width = 1.5, color = "black"), part = "all") %>%
+  hline_top(border = fp_border_default(width = 1.5, color = "black"), part = "header")
+```
+
+```{r}
+sechkurl <- "https://en.wikipedia.org/wiki/Sechs_Kies_discography"
+sechkpage <- read_html(sechkurl)
+
+sechkilosc <- sechkpage %>%
+  html_nodes("tr:nth-child(7) .infobox-data , tr:nth-child(6) .infobox-data , tr:nth-child(4) .infobox-data , tr:nth-child(2) .infobox-data") %>% 
+  html_text() %>%
+  parse_number() 
+
+bbangurl <- "https://en.wikipedia.org/wiki/Big_Bang_discography"
+bbangpage <- read_html(bbangurl)
+
+bbangilosc <- bbangpage %>%
+  html_nodes("tr:nth-child(7) .infobox-data , tr:nth-child(6) .infobox-data , tr:nth-child(5) .infobox-data , tr:nth-child(3) .infobox-data") %>% 
+  html_text() %>% 
+  parse_number() 
+
+akmuilosc <- c(3, NA, 2, 13)
+
+winnerurl <- "https://en.wikipedia.org/wiki/Winner_discography"
+winnerpage <- read_html(winnerurl)
+
+winnerilosc <- winnerpage %>%
+  html_nodes("tr:nth-child(9) .infobox-data , tr:nth-child(8) .infobox-data , tr:nth-child(5) .infobox-data , tr:nth-child(3) .infobox-data") %>% 
+  html_text() %>%
+  parse_number()
+
+blapiurl <- "https://en.wikipedia.org/wiki/Blackpink_discography" 
+blapipage <- read_html(blapiurl)
+
+blapiilosc <- blapipage %>%
+  html_nodes("tr:nth-child(7) .infobox-data , tr:nth-child(6) .infobox-data , tr:nth-child(5) .infobox-data , tr:nth-child(3) .infobox-data") %>%
+  html_text() %>%
+  parse_number()
+
+treasurl <- "https://en.wikipedia.org/wiki/Treasure_discography"
+treaspage <- read_html(treasurl)
+
+treasilosc <- c(1, NA, 2, 6)
+```
+
+```{r}
+ygalb <- data.frame(rodzajealb, sechkilosc, bbangilosc, akmuilosc, winnerilosc, blapiilosc, treasilosc)
+```
+
+```{r}
+#| label: tbl-ilalbyg
+#| tbl-cap: Ilość wydanych albumów przez zespoły YG
+ygalb %>%
+  flextable() %>%
+  set_header_labels(rodzajealb = " ",
+                    sechkilosc = "SechKies",
+                    bbangilosc = "BIGBANG",
+                    akmuilosc = "AKMU",
+                    winnerilosc = "WINNER",
+                    blapiilosc = "BLACKPINK",
+                    treasilosc = "TREASURE") %>%
+  add_header_row(colwidths = c(1, 1, 1, 3, 1), values = c(" ", "I", "II", "III", "IV"), top = FALSE) %>%
+  vline_left(border = fp_border_default(width = 1.5)) %>%
+  vline(border = fp_border_default(width = 1.5)) %>%
+  bg(bg = "#5EBD94", part = "header") %>%
+  bg(j = 1, bg = "#5EBD94", part = "body") %>%
+  bold(part = "header") %>%
+  bold(j = 1, part = "body") %>%
+  hline(border = fp_border_default(width = 1.5, color = "black"), part = "all") %>%
+  hline_top(border = fp_border_default(width = 1.5, color = "black"), part = "header")
+```
+
+```{r}
+tvxqurl1 <- "https://en.wikipedia.org/wiki/TVXQ_albums_discography"
+tvxqpage1 <- read_html(tvxqurl1)
+
+tvxq1 <- tvxqpage1 %>% 
+  html_nodes("tr:nth-child(6) .infobox-data , tr:nth-child(5) .infobox-data , tr:nth-child(3) .infobox-data") %>% 
+  html_text() %>% 
+  parse_number()
+
+tvxqurl2 <- "https://en.wikipedia.org/wiki/TVXQ_singles_discography"
+tvxqpage2 <- read_html(tvxqurl2)
+
+tvxq2 <- tvxqpage2 %>%
+  html_nodes("tr:nth-child(3) .infobox-data") %>%
+  html_text() %>% 
+  parse_number() 
+
+tvxqilosc <- as.vector(c(tvxq1, tvxq2))
+
+girgenurl <- "https://en.wikipedia.org/wiki/Girls%27_Generation_discography"
+girgenpage <- read_html(girgenurl)
+
+girgenilosc <- girgenpage %>%
+  html_nodes("tr:nth-child(9) .infobox-data , tr:nth-child(8) .infobox-data , tr:nth-child(5) .infobox-data , tr:nth-child(3) .infobox-data") %>%
+  html_text() %>%
+  parse_number()
+
+shineeurl <- "https://en.wikipedia.org/wiki/Shinee_discography" 
+shineepage <- read_html(shineeurl)
+
+shineeilosc <- shineepage %>%
+  html_nodes("tr:nth-child(9) .infobox-data , tr:nth-child(8) .infobox-data , tr:nth-child(5) .infobox-data , tr:nth-child(3) .infobox-data") %>%
+  html_text() %>%
+  parse_number()
+
+exourl <- "https://en.wikipedia.org/wiki/Exo_discography"
+exopage <- read_html(exourl)
+
+exoilosc <- c(7, NA, 7,  28)
+
+redvelvurl <- "https://en.wikipedia.org/wiki/Red_Velvet_discography"
+redvelvpage <- read_html(redvelvurl)
+
+redvelvilosc <- redvelvpage %>%
+  html_nodes("tr:nth-child(7) .infobox-data , tr:nth-child(5) .infobox-data , tr:nth-child(4) .infobox-data , tr:nth-child(3) .infobox-data") %>%
+  html_text() %>%
+  parse_number()
+
+ncturl <- "https://en.wikipedia.org/wiki/NCT_discography"
+nctpage <- read_html(ncturl)
+
+nctilosc <- c(3, NA, NA, 13)
+aespailosc <- c(NA, NA, 2, 8)
+
+```
+
+```{r}
+smalb <- data.frame(rodzajealb, tvxqilosc, girgenilosc, shineeilosc, exoilosc, redvelvilosc, nctilosc, aespailosc)
+```
+
+```{r}
+#| label: tbl-ilalbsm
+#| tbl-cap: Ilość wydanych albumów przez zespoły SM
+smalb %>%
+  flextable() %>%
+  set_header_labels(rodzajealb = " ", 
+                    tvxqilosc = "TVXQ",
+                    girgenilosc = "Girls’ Generation",
+                    shineeilosc = "SHINee",
+                    exoilosc = "EXO",
+                    redvelvilosc = "Red Velvet",
+                    nctilosc = "NCT",
+                    aespailosc = "Aespa") %>%
+  add_header_row(top = F, colwidths = c(1, 3, 3,1), values = c(" ", "II", "III", "IV")) %>%
+  vline_left(border = fp_border_default(width = 1.5, color = "black")) %>%
+  vline(border = fp_border_default(width = 1.5, color = "black")) %>%
+  bg(bg = "#9D6BB8", part = "header") %>%
+  bg(j = 1, bg = "#9D6BB8", part = "body") %>%
+  bold(part = "header") %>%
+  bold(j = 1, part = "body") %>%
+  hline(border = fp_border_default(width = 1.5, color = "black"), part = "all") %>%
+  hline_top(border = fp_border_default(width = 1.5, color = "black"), part = "header")
+```
+
+### Zespoły wytwórni JYP
+
+```{r}
+
+tytulpm <- pmpage %>%
+  html_nodes(".plainrowheaders:nth-child(12) i a") %>% 
+  html_text()
+
+korpm <- pmpage %>% 
+  html_nodes(".plainrowheaders:nth-child(12) td:nth-child(3)") %>%
+  html_text() %>%
+  parse_number(na = "—")
+
+jpnpm <- pmpage %>% 
+  html_nodes(".plainrowheaders:nth-child(12) td:nth-child(4)") %>%
+  html_text() %>%
+  parse_number(na = "—")
+
+uspm <- pmpage %>% 
+  html_nodes(".plainrowheaders:nth-child(12) td:nth-child(5)") %>%
+  html_text() %>%
+  parse_number(na = "—\n")
+
+jpnsppm <- pmpage %>% 
+  html_nodes("tr:nth-child(12) td:nth-child(6) li , tr:nth-child(10) td:nth-child(6) li , tr:nth-child(8) td:nth-child(6) li , tr:nth-child(6) td:nth-child(6) li , tr:nth-child(5) td:nth-child(6) li , h3+ .plainrowheaders td:nth-child(6) li+ li") %>%
+  html_text() %>% 
+  parse_number()
+
+korsppm <- c(57906, 117005, NA, NA, 140982, NA, 72815, NA, 63392, NA, 69678, 143480)
+
+pmalb <- data.frame(tytulpm, korpm, korsppm, jpnpm, jpnsppm, uspm) 
+```
+
+```{r}
+#| label: tbl-pmalb
+#| tbl-cap: Notacje i sprzedaż albumów studyjnych zespołu 2PM
+pmalb %>%
+  flextable() %>%
+  set_header_labels(tytulpm = "Album",
+                    korpm = "KOR",
+                    korsppm = "Sprzedane albumy (KOR)",
+                    jpnpm = "JPN",
+                    jpnsppm = "Sprzedane albumy (JPN)", 
+                    uspm = "US world") %>%
+  vline(border = fp_border_default(width = 1.5, color = "black")) %>%
+  vline_left(border = fp_border_default(width = 1.5, color = "black")) %>%
+  hline_top(border = fp_border_default(width = 1.5, color = "black")) %>%
+  hline(border = fp_border_default(width = 1.5, color = "black")) %>%
+  bold(part = "header") %>%
+  bold(j = 1, part = "body") %>%
+  bg(bg = "grey", part = "header") %>%
+  bg(bg = "grey", part = "body", j = 1)
+```
+
+```{r}
+tytultwice <- twicepage1 %>%
+  html_nodes(".plainrowheaders:nth-child(17) i a") %>%
+  html_text()
+
+kortwice <- twicepage1 %>%
+  html_nodes(".plainrowheaders:nth-child(17) td:nth-child(3)") %>%
+  html_text() %>%
+  parse_number(na = "—")
+
+jpntwice <- twicepage1 %>%
+  html_nodes(".plainrowheaders:nth-child(17) td:nth-child(6)") %>%
+  html_text() %>% 
+  parse_number(na = "—")
+
+ustwice <- twicepage1 %>%
+  html_nodes(".plainrowheaders:nth-child(17) td:nth-child(10)") %>%
+  html_text() %>%
+  parse_number(na = "—\n")
+
+jpnspfiztwice <- twicepage1 %>%
+  html_nodes("tr:nth-child(11) td:nth-child(11) li:nth-child(1) , tr:nth-child(10) td:nth-child(11) li:nth-child(1) , tr:nth-child(9) td:nth-child(11) li:nth-child(1) , tr:nth-child(5) td:nth-child(11) li:nth-child(2) , tr:nth-child(6) td:nth-child(11) li:nth-child(2) , tr:nth-child(8) td:nth-child(11) li:nth-child(1) , tr:nth-child(4) td:nth-child(11) li:nth-child(2)") %>%
+  html_text() %>%
+  parse_number()
+
+jpnspdigtwice <- c(3708, 2295, NA, 6108, 2379, 1625, 2320)
+
+korsptwice <- c(443073, 608313, 942050, NA, NA, NA, NA)
+
+
+twicealb <- data.frame(tytultwice, kortwice, korsptwice, jpntwice, jpnspfiztwice, jpnspdigtwice, ustwice)
+```
+
+```{r}
+#| label: tbl-twalb
+#| tbl-cap: Notacje i sprzedaż albumów studyjnych zespołu Twice
+twicealb %>%
+  flextable() %>%
+  set_header_labels(tytultwice = "Album",
+                    kortwice = "KOR",
+                    korsptwice = "Sprzedane albumy (KOR)",
+                    jpntwice = "JPN",
+                    jpnspfiztwice = "Sprzedane albumy (JPN)",
+                    jpnspdigtwice = "Sprzedane albumy (JPN)",
+                    ustwice = "US world") %>%
+  vline_left(border = fp_border_default(width = 1.5, color = "black")) %>%
+  vline(border = fp_border_default(width = 1.5, color = "black")) %>%
+  hline_top(border = fp_border_default(width = 1.5, color = "black")) %>%
+  hline(border = fp_border_default(width = 1.5, color = "black")) %>%
+  bold(part = "header") %>%
+  bold(j = 1, part = "body") %>%
+  bg(bg = "#E0A54C", part = "header") %>%
+  bg(bg = "#E0A54C", part = "body", j = 1)
+```
+
+```{r}
+tytulskz <- skzpage %>%
+  html_nodes(".plainrowheaders:nth-child(8) i a") %>% 
+  html_text()
+
+korskz <- skzpage %>%
+  html_nodes(".plainrowheaders:nth-child(8) td:nth-child(3)") %>%
+  html_text() %>%
+  parse_number(na = "TBA\n")
+korskz[3] <- "TBA"
+
+jpnskz <- skzpage %>%
+  html_nodes(".table-no2 abbr , .plainrowheaders:nth-child(8) td:nth-child(7)") %>%
+  html_text() %>%
+  parse_number(na = "TBA")
+jpnskz[3] <- "TBA"
+
+usskz <- skzpage %>%
+  html_nodes(".table-no2 abbr , h3+ .plainrowheaders td:nth-child(10)") %>%
+  html_text() %>%
+  parse_number(na = "TBA")
+usskz[3] <- "TBA"
+
+korspskz <- c(605789, 1550043, NA)
+
+jpnspskz <- c(39911, 54169, NA)
+
+
+skzalb <- data.frame(tytulskz, korskz, korspskz, jpnskz, jpnspskz, usskz)
+```
+
+```{r}
+#| label: tbl-skzalb
+#| tbl-cap: Notacje i sprzedaż albumów studyjnych zespołu Stray Kids
+skzalb %>%
+  flextable() %>%
+  set_header_labels(tytulskz = "Album",
+                    korskz = "KOR", 
+                    korspskz = "Sprzedane albumy (KOR)", 
+                    jpnskz = "JPN", 
+                    jpnspskz  = "Sprzedane albumy (JPN)", 
+                    usskz = "US world") %>%
+  vline_left(border = fp_border_default(width = 1.5, color = "black")) %>%
+  vline(border = fp_border_default(width = 1.5, color = "black")) %>%
+  hline_top(border = fp_border_default(width = 1.5, color = "black")) %>%
+  hline(border = fp_border_default(width = 1.5, color = "black")) %>%
+  bold(part = "header") %>%
+  bold(j = 1, part = "body") %>%
+  bg(bg = "#EB617C", part = "header") %>%
+  bg(bg = "#EB617C", part = "body", j = 1)
+```
+
+Album "The Sound" nie zawiera jeszcze notacji, zostanie on dopiero wydany 22 lutego.
+
+```{r}
+tytulitzy <- itzypage %>%
+  html_nodes("h3+ .plainrowheaders th i a") %>%
+  html_text()
+
+koritzy <- 1
+jpnitzy <- 8
+usitzy <- 1
+
+korspitzy <- 623059
+
+itzyalb <- data.frame(tytulitzy, koritzy, korspitzy, jpnitzy, usitzy)
+```
+
+```{r}
+#| label: tbl-itzyalb
+#| tbl-cap: Notacje i sprzedaż albumu studyjnego zespołu Itzy
+itzyalb %>%
+  flextable() %>%
+  set_header_labels(tytulitzy = "Album", 
+                    koritzy = "KOR", 
+                    korspitzy = "Sprzedane albumy (KOR)", 
+                    jpnitzy = "JPN", 
+                    usitzy = "US world") %>%
+  vline_left(border = fp_border_default(width = 1.5, color = "black")) %>%
+  vline(border = fp_border_default(width = 1.5, color = "black")) %>%
+  hline_top(border = fp_border_default(width = 1.5, color = "black")) %>%
+  hline(border = fp_border_default(width = 1.5, color = "black")) %>%
+  bold(part = "header") %>%
+  bold(j = 1, part = "body") %>%
+  bg(bg = "#E35AF5", part = "header") %>%
+  bg(bg = "#E35AF5", part = "body", j = 1)
+```
+
+### Zespoły wytwórni YG
+
+```{r}
+tytulsechk <- sechkpage %>% 
+  html_nodes("tr:nth-child(7) th i , .plainrowheaders:nth-child(13) tr:nth-child(6) i , .plainrowheaders:nth-child(13) th i a , .plainrowheaders:nth-child(13) tr:nth-child(4) i") %>%
+  html_text()
+
+korsechk <- c("*", "*", "*", "*", "*", 2)
+
+ussechk <- c("*", "*", "*", "*", "*", 10)
+
+korspsechk <- sechkpage %>%
+  html_nodes(".plainrowheaders:nth-child(13) td+ td li") %>%
+  html_text() %>%
+  parse_number()
+
+sechkalb <- data.frame(tytulsechk, korsechk, korspsechk, ussechk)
+```
+
+```{r}
+#| label: tbl-sechklb
+#| tbl-cap: Notacje i sprzedaż albumów studyjnych zespołu Sechs Kies
+sechkalb %>%
+  flextable() %>%
+  set_header_labels(tytulsechk = "Album", 
+                    korsechk = "KOR", 
+                    korspsechk = "Sprzedane albumy (KOR)", 
+                    ussechk = "US world") %>%
+  vline_left(border = fp_border_default(width = 1.5, color = "black")) %>%
+  vline(border = fp_border_default(width = 1.5, color = "black")) %>%
+  hline_top(border = fp_border_default(width = 1.5, color = "black")) %>%
+  hline(border = fp_border_default(width = 1.5, color = "black")) %>%
+  bold(part = "header") %>%
+  bold(j = 1, part = "body") %>%
+  bg(bg = "#F0E065", part = "header") %>%
+  bg(bg = "#F0E065", part = "body", j = 1)
+```
+
+```{r}
+tytulbbang <- bbangpage %>%
+  html_nodes(".plainrowheaders:nth-child(18) i a") %>%
+  html_text()
+
+korbbang <- c(3, 5, 1, "*", "*", NA, NA, NA)
+
+jpnbbang <- bbangpage %>%
+  html_nodes(".plainrowheaders:nth-child(18) tr:nth-child(12) td:nth-child(4) , .plainrowheaders:nth-child(18) tr:nth-child(11) td:nth-child(4) , .plainrowheaders:nth-child(18) tr:nth-child(10) td:nth-child(4) , tr:nth-child(8) .table-na+ td , .plainrowheaders:nth-child(18) tr:nth-child(6) td:nth-child(4) , .plainrowheaders:nth-child(18) tr:nth-child(5) td:nth-child(4) , .plainrowheaders:nth-child(18) tr:nth-child(9) td:nth-child(3) , .plainrowheaders:nth-child(18) tr:nth-child(4) td:nth-child(4)") %>%
+  html_text() %>%
+  parse_number(na = "—\n")
+
+korspbbang <- c(86759, 219572, 259779, NA, NA, NA, NA, NA)
+jpnspbbang <- c(NA, NA, 138203, NA, 67285, 98854, 217000, 202600)
+
+bbangalb <- data.frame(tytulbbang, korbbang, korspbbang, jpnbbang, jpnspbbang)
+```
+
+```{r}
+#| label: tbl-bbangklb
+#| tbl-cap: Notacje i sprzedaż albumów studyjnych zespołu Big Bang
+bbangalb %>%
+  flextable() %>%
+  set_header_labels(tytulbbang = "Album", 
+                    korbbang = "KOR", 
+                    korspbbang = "Sprzedane albumy (KOR)", 
+                    jpnbbang = "JPN", 
+                    jpnspbbang  = "Sprzedane albumy (JPN)") %>%
+  vline_left(border = fp_border_default(width = 1.5, color = "black")) %>%
+  vline(border = fp_border_default(width = 1.5, color = "black")) %>%
+  hline_top(border = fp_border_default(width = 1.5, color = "black")) %>%
+  hline(border = fp_border_default(width = 1.5, color = "black")) %>%
+  bold(part = "header") %>%
+  bold(j = 1, part = "body") %>%
+  bg(bg = "#E4ED3B", part = "header") %>%
+  bg(bg = "#E4ED3B", part = "body", j = 1)
+```
+
+```{r}
+akmuurl <- "https://en.wikipedia.org/wiki/AKMU_discography"
+akmupage <- read_html(akmuurl)
+
+tytulakmu <- akmupage %>%
+  html_nodes("h3+ .plainrowheaders tr~ tr+ tr th i a") %>% 
+  html_text() 
+
+korakmu <- c(1, 8, 4)
+
+usakmu <- c(2, 7, NA)
+
+korspakmu <- c(36522, 9910, 10531)
+
+akmualb <- data.frame(tytulakmu, korakmu, korspakmu, usakmu)
+```
+
+```{r}
+#| label: tbl-akmulb
+#| tbl-cap: Notacje i sprzedaż albumów studyjnych zespołu AKMU
+akmualb %>%
+  flextable() %>%
+  set_header_labels(tytulakmu = "Album",
+                    korakmu = "KOR", 
+                    korspakmu = "Sprzedane albumy (KOR)", 
+                    usakmu = "US world") %>%
+  vline_left(border = fp_border_default(width = 1.5, color = "black")) %>%
+  vline(border = fp_border_default(width = 1.5, color = "black")) %>%
+  hline_top(border = fp_border_default(width = 1.5, color = "black")) %>%
+  hline(border = fp_border_default(width = 1.5, color = "black")) %>%
+  bold(part = "header") %>%
+  bold(j = 1, part = "body") %>%
+  bg(bg = "#A28FB0", part = "header") %>%
+  bg(bg = "#A28FB0", part = "body", j = 1)
+```
+
+```{r}
+tytulwinn <- winnerpage %>%
+  html_nodes("caption+ tbody tr:nth-child(9) i , .plainrowheaders:nth-child(7) i a") %>% 
+  html_text()
+korwinn <- c(1,1,3,NA)
+
+korspwinn <- c(92897, 124264, 113346, NA)
+
+jpnwinn <- c(2, 5, NA, 5)
+
+jpnspwinn <- c(40835, 36991, NA, 24009)
+
+uswinn <- c(1, 6, NA, NA)
+
+winneralb <- data.frame(tytulwinn, korwinn, korspwinn, jpnwinn, jpnspwinn, uswinn)
+```
+
+```{r}
+#| label: tbl-winnlb
+#| tbl-cap: Notacje i sprzedaż albumów studyjnych zespołu Winner
+winneralb %>%
+  flextable %>%
+  set_header_labels(tytulwinn = "Album", 
+                    korwinn = "KOR",
+                    korspwinn = "Sprzedane albumy (KOR)",
+                    jpnwinn = "JPN",
+                    jpnspwinn = "Sprzedane albumy (JPN)", 
+                    uswinn = "US world") %>%
+  vline_left(border = fp_border_default(width = 1.5, color = "black")) %>%
+  vline(border = fp_border_default(width = 1.5, color = "black")) %>%
+  hline_top(border = fp_border_default(width = 1.5, color = "black")) %>%
+  hline(border = fp_border_default(width = 1.5, color = "black")) %>%
+  bold(part = "header") %>%
+  bold(j = 1, part = "body") %>%
+  bg(bg = "#928DEB", part = "header") %>%
+  bg(bg = "#928DEB", part = "body", j = 1)
+```
+
+```{r}
+tytulblapi <- c("The Album", "Born Pink")
+korblapi <- c(1, 1)
+korspblapi <- c(1560637, 2640372)
+jpnblapi <- c(3, 3)
+jpnspblapi <- c(66862, 34475)
+usblapi <- c(2,1)
+
+blapialb <- data.frame(tytulblapi, korblapi, korspblapi, jpnblapi, jpnspblapi, usblapi)
+```
+
+```{r}
+#| label: tbl-blapilb
+#| tbl-cap: Notacje i sprzedaż albumów studyjnych zespołu Blackpink
+blapialb %>%
+  flextable() %>%
+  set_header_labels(tytulblapi = "Album",
+                    korblapi = "KOR",
+                    korspblapi = "Sprzedane albumy (KOR)", 
+                    jpnblapi = "JPN", 
+                    jpnspblapi = "Sprzedane albumy (JPN)") %>%
+  vline_left(border = fp_border_default(width = 1.5, color = "black")) %>%
+  vline(border = fp_border_default(width = 1.5, color = "black")) %>%
+  hline_top(border = fp_border_default(width = 1.5, color = "black")) %>%
+  hline(border = fp_border_default(width = 1.5, color = "black")) %>%
+  bold(part = "header") %>%
+  bold(j = 1, part = "body") %>%
+  bg(bg = "#BE3CE6", part = "header") %>%
+  bg(bg = "#BE3CE6", part = "body", j = 1)
+```
+
+```{r}
+tytultreas <- "The First Step: Treasure Effect"
+kortreas <- 1
+korsptreas <- 399445
+jpntreas <- 1
+jpnsptreas <- 130288
+
+treasalb <- data.frame(tytultreas, kortreas, korsptreas, jpntreas, jpnsptreas)
+```
+
+```{r}
+#| label: tbl-treaslb
+#| tbl-cap: Notacje i sprzedaż albumu studyjnego zespołu Treasure
+treasalb %>%
+  flextable() %>%
+  set_header_labels(tytultreas = "Album", 
+                    kortreas = "KOR", 
+                    korsptreas = "Sprzedane albumy (KOR)", 
+                    jpntreas = "JPN", 
+                    jpnsptreas = "Sprzedane albumy (JPN)") %>%
+  vline_left(border = fp_border_default(width = 1.5, color = "black")) %>%
+  vline(border = fp_border_default(width = 1.5, color = "black")) %>%
+  hline_top(border = fp_border_default(width = 1.5, color = "black")) %>%
+  hline(border = fp_border_default(width = 1.5, color = "black")) %>%
+  bold(part = "header") %>%
+  bold(j = 1, part = "body") %>%
+  bg(bg = "#73DFFA", part = "header") %>%
+  bg(bg = "#73DFFA", part = "body", j = 1)
+```
+
+### Zespoły wytwórni SM
+
+```{r}
+tytultvxq <- tvxqpage1 %>%
+  html_nodes(".plainrowheaders:nth-child(10) th i a") %>%
+  html_text()
+
+kortvxq <- tvxqpage1 %>% 
+  html_nodes(".plainrowheaders:nth-child(10) th~ td:nth-child(3)") %>% 
+  html_text() %>%
+  parse_number(na = "—\n")
+
+jpntvxq <- tvxqpage1 %>% 
+  html_nodes(".plainrowheaders:nth-child(10) td:nth-child(4)") %>%
+  html_text() %>%
+  parse_number(na = "—\n")
+
+ustvxq <- tvxqpage1 %>%
+  html_nodes(".plainrowheaders:nth-child(10) td:nth-child(6)") %>%
+  html_text() %>%
+  parse_number(na = "—\n")
+
+korsptvxq <- c(305343, 290809, 468617, 603936, 327120, 356208, 307537, 146354, 29947, 25750, 56983, NA, 11765, 16229, 33644, 2206, NA, NA)
+
+jpnsptvxq <- c(NA, NA, NA, NA, 51940, 69090, 51572, 12519, 36397, 62362, 158524, 317699, 331600, 298389, 265013, 266824, 153262, 184201)
+  
+tvxqalb <- data.frame(tytultvxq, kortvxq, korsptvxq, jpntvxq, jpnsptvxq, ustvxq)
+```
+
+```{r}
+#| label: tbl-tvxqalb
+#| tbl-cap: Notacje i sprzedaż albumów studyjnych zespołu TVXQ
+tvxqalb %>%
+  flextable() %>%
+  set_header_labels(tytultvxq = "Album",
+                    kortvxq = "KOR", 
+                    korsptvxq = "Sprzedane albumy (KOR)",
+                    jpntvxq = "JPN", 
+                    jpnsptvxq = "Sprzedane albumy (JPN)", 
+                    ustvxq = "US world") %>%
+  vline_left(border = fp_border_default(width = 1.5, color = "black")) %>%
+  vline(border = fp_border_default(width = 1.5, color = "black")) %>%
+  hline_top(border = fp_border_default(width = 1.5, color = "black")) %>%
+  hline(border = fp_border_default(width = 1.5, color = "black")) %>%
+  bold(part = "header") %>%
+  bold(j = 1, part = "body") %>%
+  bg(bg = "#E61C1C", part = "header") %>%
+  bg(bg = "#E61C1C", part = "body", j = 1)
+```
+
+```{r}
+tytulgirgen <- girgenpage %>%
+  html_nodes(".plainrowheaders:nth-child(12) i a") %>%
+  html_text()
+
+korgirgen <- girgenpage %>%
+  html_nodes(".plainrowheaders:nth-child(12) td:nth-child(3)") %>%
+  html_text() 
+
+korgirgen[1] <- "—"
+korgirgen <- korgirgen %>%
+  parse_number(na = "—")
+
+
+korspgirgen <- girgenpage %>%
+  html_nodes("tr:nth-child(14) td+ td li+ li , tr:nth-child(13) td+ td li+ li , tr:nth-child(5) td:nth-child(13) li:nth-child(1) , tr:nth-child(6) td:nth-child(13) li:nth-child(1) , tr:nth-child(7) td:nth-child(13) li:nth-child(1) , tr:nth-child(8) td:nth-child(13) li:nth-child(1) , tr:nth-child(9) td+ td li:nth-child(1) , tr:nth-child(10) td:nth-child(13) li:nth-child(1) , tr:nth-child(12) td+ td li+ li , tr:nth-child(4) td:nth-child(13) li") %>%
+  html_text() %>%
+  parse_number()
+
+jpngirgen <- girgenpage %>%
+  html_nodes(".plainrowheaders:nth-child(12) td:nth-child(6)") %>%
+  html_text() %>%
+  parse_number(na = "—" )
+  
+
+jpnspgirgen <- c(NA, 9318, 107800, 54000, 21500, 11000, 12033, 871000, 204000, 171000)
+
+usgirgen <- girgenpage %>%
+  html_nodes("h3+ .plainrowheaders td:nth-child(12)") %>%
+  html_text() %>%
+  parse_number(na = "—\n")
+
+girgenalb <- data.frame(tytulgirgen, korgirgen, korspgirgen, jpngirgen, jpnspgirgen, usgirgen)
+```
+
+```{r}
+#| label: tbl-girgenalb
+#| tbl-cap: Notacje i sprzedaż albumów studyjnych zespołu Girls' Generation
+girgenalb %>%
+  flextable() %>%
+  set_header_labels(tytulgirgen = "Album",
+                    korgirgen = "KOR", 
+                    korspgirgen = "Sprzedane albumy (KOR)", 
+                    jpngirgen = "JPN", 
+                    jpnspgirgen = "Sprzedane albumy (JPN)", 
+                    usgirgen = "US world") %>%
+  vline_left(border = fp_border_default(width = 1.5, color = "black")) %>%
+  vline(border = fp_border_default(width = 1.5, color = "black")) %>%
+  hline_top(border = fp_border_default(width = 1.5, color = "black")) %>%
+  hline(border = fp_border_default(width = 1.5, color = "black")) %>%
+  bold(part = "header") %>%
+  bold(j = 1, part = "body") %>%
+  bg(bg = "#F596A4", part = "header") %>%
+  bg(bg = "#F596A4", part = "body", j = 1)
+```
+
+```{r}
+tytulshinee <- shineepage %>%
+  html_nodes(".plainrowheaders:nth-child(11) th i a") %>%
+  html_text()
+
+korshinee <- shineepage %>%
+  html_nodes(".plainrowheaders:nth-child(11) th~ td:nth-child(3)") %>%
+  html_text()
+
+korshinee[1] <- "—"
+korshinee <- korshinee %>%
+  parse_number(na = "—")
+
+korspshinee <- c(69246, 150710, 184719, 193412, 179027, 116152, 313309, 8254, NA, 3662, NA, NA)
+
+jpnshinee <- c(NA, 14, 10, 6, 11, 7, 7, 4, 2, 1,1,3)
+
+jpnspshinee <- c(NA, 19283, 24376, 41070, 32561, 13147, 44711, 99565, 69010, 61357, 61263, 84281)
+
+usshinee <- c(NA,NA, 2, 1, 2, 4, 7, NA, NA, NA, NA, NA)
+
+shineealb <- data.frame(tytulshinee, korshinee, korspshinee, jpnshinee, jpnspshinee, usshinee)
+```
+
+```{r}
+#| label: tbl-shineelb
+#| tbl-cap: Notacje i sprzedaż albumów studyjnych zespołu Shinee
+shineealb %>%
+  flextable() %>%
+  set_header_labels(tytulshinee = "Album",
+                    korshinee = "KOR", 
+                    korspshinee = "Sprzedane albumy (KOR)",
+                    jpnshinee = "JPN", 
+                    jpnspshinee = "Sprzedane albumy (JPN)", 
+                    usshinee = "US world") %>%
+  vline_left(border = fp_border_default(width = 1.5, color = "black")) %>%
+  vline(border = fp_border_default(width = 1.5, color = "black")) %>%
+  hline_top(border = fp_border_default(width = 1.5, color = "black")) %>%
+  hline(border = fp_border_default(width = 1.5, color = "black")) %>%
+  bold(part = "header") %>%
+  bold(j = 1, part = "body") %>%
+  bg(bg = "#65D6D6", part = "header") %>%
+  bg(bg = "#65D6D6", part = "body", j = 1)
+```
+
+```{r}
+tytulexo <- exopage %>%
+  html_nodes(".plainrowheaders:nth-child(9) i a") %>%
+  html_text()
+korexo <- c(1, 1, 1, 1, 1, 1, NA)
+
+korspexo <- c(579874, 808358, 836116, 1132625, 1445329, 843305, NA)
+
+jpnexo <- c(9, 4, 5, 7, 3, 16, 1)
+
+jpnspexo <- c(148000, 83226, 61918, 51285, 67889, 24275, 123912)
+
+usexo <- c(1, 1, 2, 1, 1, 1, 4)
+
+usspexo <- c(6000, 15000, NA, 11000, 50000, 25000, NA)
+
+exoalb <- data.frame(tytulexo, korexo, korspexo, jpnexo, jpnspexo, usexo, usspexo)
+```
+
+```{r}
+#| label: tbl-exolb
+#| tbl-cap: Notacje i sprzedaż albumów studyjnych zespołu EXO
+exoalb %>%
+  flextable() %>%
+  set_header_labels(tytulexo = "Album", 
+                    korexo = "KOR", 
+                    korspexo = "Sprzedane albumy (KOR)", 
+                    jpnexo = "JPN", 
+                    jpnspexo = "Sprzedane albumy (JPN)", 
+                    usexo = "US world", 
+                    usspexo = "Sprzedane albumy (US world)") %>% 
+  vline_left(border = fp_border_default(width = 1.5, color = "black")) %>%
+  vline(border = fp_border_default(width = 1.5, color = "black")) %>%
+  hline_top(border = fp_border_default(width = 1.5, color = "black")) %>%
+  hline(border = fp_border_default(width = 1.5, color = "black")) %>%
+  bold(part = "header") %>%
+  bold(j = 1, part = "body") %>%
+  bg(bg = "#BFBAA8", part = "header") %>%
+  bg(bg = "#BFBAA8", part = "body", j = 1)
+```
+
+```{r}
+tytulredvelv <- redvelvpage %>%
+  html_nodes(".plainrowheaders:nth-child(12) i a") %>%
+  html_text()
+
+korredvelv <- c(1, 2, NA)
+
+korspredvelv <- c(109573, 155463, NA)
+
+jpnredvelv <- c(47, 20, 5)
+
+jpnspredvelv <- c(4478, 12799, 17811)
+
+usredvelv <- c(1, 1, NA)
+
+usspredvelv <- c(3000, 3000, NA)
+
+redvelvalb <- data.frame(tytulredvelv, korredvelv, korspredvelv, jpnredvelv, jpnspredvelv, usredvelv, usspredvelv)
+```
+
+```{r}
+#| label: tbl-redvelvlb
+#| tbl-cap: Notacje i sprzedaż albumów studyjnych zespołu Red Velvet
+redvelvalb %>%
+  flextable() %>%
+  set_header_labels(tytulredvelv = "Album",
+                    korredvelv = "KOR", 
+                    korspredvelv = "Sprzedane albumy (KOR)",
+                    jpnredvelv = "JPN", 
+                    jpnspredvelv = "Sprzedane albumy (JPN)",
+                    usredvelv = "US world", 
+                    usspredvelv = "Sprzedane albumy (US world)") %>%
+  vline_left(border = fp_border_default(width = 1.5, color = "black")) %>%
+  vline(border = fp_border_default(width = 1.5, color = "black")) %>%
+  hline_top(border = fp_border_default(width = 1.5, color = "black")) %>%
+  hline(border = fp_border_default(width = 1.5, color = "black")) %>%
+  bold(part = "header") %>%
+  bold(j = 1, part = "body") %>%
+  bg(bg = "#FFB97F", part = "header") %>%
+  bg(bg = "#FFB97F", part = "body", j = 1)
+```
+
+```{r}
+tytulnct <- c("NCT 2018 Empathy", "NCT 2020 Resonance", "Universe")
+
+kornct <- c(2, 1, 1)
+
+korspnct <- c(640535, 1647895, 1837313)
+
+jpnnct <- c(10, 2, 1)
+
+jpnspnct <- c(15757, 149855, 84158)
+
+usnct <- c(5, 1, 1)
+
+usspnct <- c(1000, 146000, 20000)
+
+nctalb <- data.frame(tytulnct, kornct, korspnct, jpnnct, jpnspnct, usnct, usspnct)
+```
+
+```{r}
+#| label: tbl-nctalb
+#| tbl-cap: Notacje i sprzedaż albumów studyjnych zespołu NCT
+nctalb %>%
+  flextable() %>%
+  set_header_labels(tytulnct = "Album", 
+                    kornct = "KOR", 
+                    korspnct = "Sprzedane albumy (KOR)", 
+                    jpnnct = "JPN", 
+                    jpnspnct = "Sprzedane albumy (JPN)", 
+                    usnct = "US world", 
+                    usspnct = "Sprzedane albumy (US world)") %>%
+  vline_left(border = fp_border_default(width = 1.5, color = "black")) %>%
+  vline(border = fp_border_default(width = 1.5, color = "black")) %>%
+  hline_top(border = fp_border_default(width = 1.5, color = "black")) %>%
+  hline(border = fp_border_default(width = 1.5, color = "black")) %>%
+  bold(part = "header") %>%
+  bold(j = 1, part = "body") %>%
+  bg(bg = "#D1FF5C", part = "header") %>%
+  bg(bg = "#D1FF5C", part = "body", j = 1)
+```
+
+## Dane
+
+Wykorzystane dane zostały pobrane z niżej wymienionych stron:
+
+-   <https://www.wsj.com/market-data/quotes/KR/035900/financials/annual/income-statement>
+
+-   <https://www.wsj.com/market-data/quotes/KR/XKRX/041510/financials/annual/income-statement>
+
+-   <https://www.wsj.com/market-data/quotes/KR/XKRX/122870/financials/annual/income-statement>
+
+-   <https://en.wikipedia.org/wiki/JYP_Entertainment#Artists>
+
+-   <https://en.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_2PM>
+
+-   <https://en.wikipedia.org/wiki/Twice#Awards_and_achievements>
+
+-   <https://en.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_Stray_Kids>
+
+-   <https://en.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_Itzy>
+
+-   <https://en.wikipedia.org/wiki/YG_Entertainment>
+
+-   <https://en.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_Big_Bang>
+
+-   <https://en.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_AKMU>
+
+-   <https://en.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_Winner>
+
+-   <https://en.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_Blackpink>
+
+-   <https://en.wikipedia.org/wiki/Treasure_(band)#Awards_and_nominations>
+
+-   <https://en.wikipedia.org/wiki/SM_Entertainment>
+
+-   <https://en.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_TVXQ>
+
+-   <https://en.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_Girls%27_Generation>
+
+-   <https://en.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_Shinee>
+
+-   <https://en.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_Exo>
+
+-   <https://en.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_Red_Velvet>
+
+-   <https://en.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_NCT>
+
+-   <https://en.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_Aespa>
+
+-   <https://en.wikipedia.org/wiki/2PM_discography>
+
+-   <https://en.wikipedia.org/wiki/Twice_albums_discography>
+
+-   <https://en.wikipedia.org/wiki/Stray_Kids_discography>
+
+-   <https://en.wikipedia.org/wiki/Itzy_discography>
+
+-   <https://en.wikipedia.org/wiki/Big_Bang_discography>
+
+-   <https://en.wikipedia.org/wiki/Sechs_Kies_discography>
+
+-   <https://en.wikipedia.org/wiki/AKMU_discography>
+
+-   <https://en.wikipedia.org/wiki/Winner_discography>
+
+-   <https://en.wikipedia.org/wiki/Blackpink_discography>
+
+-   <https://en.wikipedia.org/wiki/Treasure_discography>
+
+-   <https://en.wikipedia.org/wiki/TVXQ_albums_discography>
+
+-   <https://en.wikipedia.org/wiki/Girls%27_Generation_discography>
+
+-   <https://en.wikipedia.org/wiki/Shinee_discography>
+
+-   <https://en.wikipedia.org/wiki/Exo_discography>
+
+-   <https://en.wikipedia.org/wiki/Red_Velvet_discography>
+
+-   <https://en.wikipedia.org/wiki/NCT_discography>
